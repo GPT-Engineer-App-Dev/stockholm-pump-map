@@ -17,24 +17,31 @@ const BikePumpMap = () => {
       console.log("Map has loaded successfully");
     }
   }, [mapLoaded]);
+
   return (
     <Box p={4}>
       <Heading as="h1" size="xl" mb={4} textAlign="center">
         Bike Pump Stations in Stockholm
       </Heading>
-      {mapLoaded && (
-        <MapContainer center={[59.3293, 18.0686]} zoom={13} style={{ height: "80vh", width: "100%" }} whenCreated={() => setMapLoaded(true)}>
-          <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          />
-          {bikePumpStations.map((station, index) => (
-            <Marker key={index} position={[station.lat, station.lng]}>
-              <Popup>{station.name}</Popup>
-            </Marker>
-          ))}
-        </MapContainer>
-      )}
+      <MapContainer
+        center={[59.3293, 18.0686]}
+        zoom={13}
+        style={{ height: "80vh", width: "100%" }}
+        whenCreated={() => {
+          console.log("Map is being created");
+          setMapLoaded(true);
+        }}
+      >
+        <TileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        />
+        {bikePumpStations.map((station, index) => (
+          <Marker key={index} position={[station.lat, station.lng]}>
+            <Popup>{station.name}</Popup>
+          </Marker>
+        ))}
+      </MapContainer>
     </Box>
   );
 };
