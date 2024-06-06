@@ -13,7 +13,7 @@ const BikePumpMap = () => {
   const [mapLoaded, setMapLoaded] = useState(false);
   const [mapError, setMapError] = useState(null);
   const [mapInstance, setMapInstance] = useState(null);
-  const [mapDimensions, setMapDimensions] = useState({ width: '100%', height: '80vh' });
+  const [mapContainerDimensions, setMapContainerDimensions] = useState({ width: '100%', height: '80vh' });
 
   useEffect(() => {
     console.log("BikePumpMap component mounted");
@@ -34,7 +34,7 @@ const BikePumpMap = () => {
     const mapContainer = document.querySelector('.leaflet-container');
     if (mapContainer) {
       console.log("Map container dimensions:", mapContainer.clientWidth, mapContainer.clientHeight);
-      setMapDimensions({ width: mapContainer.clientWidth, height: mapContainer.clientHeight });
+      setMapContainerDimensions({ width: mapContainer.clientWidth, height: mapContainer.clientHeight });
     }
   }, []);
 
@@ -82,39 +82,41 @@ const BikePumpMap = () => {
           <Text>Failed to load the map. Please try again later.</Text>
         </Box>
       )}
-      <MapContainer
-        center={[59.3293, 18.0686]}
-        zoom={13}
-        style={{ height: mapDimensions.height, width: mapDimensions.width }}
-        whenCreated={(mapInstance) => {
-          console.log("Map is being created");
-          setMapLoaded(true);
-          setMapInstance(mapInstance);
-        }}
-        whenReady={(mapInstance) => {
-          console.log("Map is ready");
-          setMapInstance(mapInstance);
-        }}
-        onError={(error) => {
-          console.error("Map loading error:", error);
-          setMapError(error);
-        }}
-      >
-        <MapUpdater />
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      <Box style={{ height: '80vh', width: '100%' }}>
+        <MapContainer
+          center={[59.3293, 18.0686]}
+          zoom={13}
+          style={{ height: mapContainerDimensions.height, width: mapContainerDimensions.width }}
+          whenCreated={(mapInstance) => {
+            console.log("Map is being created");
+            setMapLoaded(true);
+            setMapInstance(mapInstance);
+          }}
+          whenReady={(mapInstance) => {
+            console.log("Map is ready");
+            setMapInstance(mapInstance);
+          }}
           onError={(error) => {
-            console.error("TileLayer loading error:", error);
+            console.error("Map loading error:", error);
             setMapError(error);
           }}
-        />
-        {bikePumpStations.map((station, index) => (
-          <Marker key={index} position={[station.lat, station.lng]}>
-            <Popup>{station.name}</Popup>
-          </Marker>
-        ))}
-      </MapContainer>
+        >
+          <MapUpdater />
+          <TileLayer
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            onError={(error) => {
+              console.error("TileLayer loading error:", error);
+              setMapError(error);
+            }}
+          />
+          {bikePumpStations.map((station, index) => (
+            <Marker key={index} position={[station.lat, station.lng]}>
+              <Popup>{station.name}</Popup>
+            </Marker>
+          ))}
+        </MapContainer>
+      </Box>
     </Box>
   );
 };
