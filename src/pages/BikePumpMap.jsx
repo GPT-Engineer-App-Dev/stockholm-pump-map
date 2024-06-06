@@ -13,6 +13,7 @@ const BikePumpMap = () => {
   const [mapLoaded, setMapLoaded] = useState(false);
 
   useEffect(() => {
+    console.log("BikePumpMap component mounted");
     if (mapLoaded) {
       console.log("Map has loaded successfully");
     }
@@ -22,10 +23,12 @@ const BikePumpMap = () => {
     const map = useMap();
     useEffect(() => {
       map.invalidateSize();
+      console.log("Map size invalidated");
     }, [map]);
 
     useMapEvent('resize', () => {
       map.invalidateSize();
+      console.log("Map resized");
     });
 
     return null;
