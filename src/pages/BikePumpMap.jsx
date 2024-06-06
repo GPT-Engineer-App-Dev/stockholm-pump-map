@@ -1,4 +1,4 @@
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import { useEffect, useState } from 'react';
 import { Box, Heading } from '@chakra-ui/react';
 import 'leaflet/dist/leaflet.css';
@@ -18,6 +18,14 @@ const BikePumpMap = () => {
     }
   }, [mapLoaded]);
 
+  const MapUpdater = () => {
+    const map = useMap();
+    useEffect(() => {
+      map.invalidateSize();
+    }, [map]);
+    return null;
+  };
+
   return (
     <Box p={4}>
       <Heading as="h1" size="xl" mb={4} textAlign="center">
@@ -32,6 +40,7 @@ const BikePumpMap = () => {
           setMapLoaded(true);
         }}
       >
+        <MapUpdater />
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
