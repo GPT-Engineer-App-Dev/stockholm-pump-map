@@ -12,6 +12,7 @@ const bikePumpStations = [
 const BikePumpMap = () => {
   const [mapLoaded, setMapLoaded] = useState(false);
   const [mapError, setMapError] = useState(null);
+  const [mapInstance, setMapInstance] = useState(null);
 
   useEffect(() => {
     console.log("BikePumpMap component mounted");
@@ -19,6 +20,21 @@ const BikePumpMap = () => {
       console.log("Map has loaded successfully");
     }
   }, [mapLoaded]);
+
+  useEffect(() => {
+    if (mapInstance) {
+      console.log("Map instance:", mapInstance);
+      console.log("Map center:", mapInstance.getCenter());
+      console.log("Map zoom level:", mapInstance.getZoom());
+    }
+  }, [mapInstance]);
+
+  useEffect(() => {
+    const mapContainer = document.querySelector('.leaflet-container');
+    if (mapContainer) {
+      console.log("Map container dimensions:", mapContainer.clientWidth, mapContainer.clientHeight);
+    }
+  }, []);
 
   const MapUpdater = () => {
     const map = useMap();
@@ -52,11 +68,11 @@ const BikePumpMap = () => {
         whenCreated={(mapInstance) => {
           console.log("Map is being created");
           setMapLoaded(true);
-          console.log("Map instance:", mapInstance);
+          setMapInstance(mapInstance);
         }}
         whenReady={(mapInstance) => {
           console.log("Map is ready");
-          console.log("Map instance:", mapInstance);
+          setMapInstance(mapInstance);
         }}
         onError={(error) => {
           console.error("Map loading error:", error);
@@ -67,6 +83,10 @@ const BikePumpMap = () => {
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          onError={(error) => {
+            console.error("TileLayer loading error:", error);
+            setMapError(error);
+          }}
         />
         {bikePumpStations.map((station, index) => (
           <Marker key={index} position={[station.lat, station.lng]}>
