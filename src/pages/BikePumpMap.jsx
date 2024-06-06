@@ -13,6 +13,7 @@ const BikePumpMap = () => {
   const [mapLoaded, setMapLoaded] = useState(false);
   const [mapError, setMapError] = useState(null);
   const [mapInstance, setMapInstance] = useState(null);
+  const [mapDimensions, setMapDimensions] = useState({ width: '100%', height: '80vh' });
 
   useEffect(() => {
     console.log("BikePumpMap component mounted");
@@ -33,8 +34,28 @@ const BikePumpMap = () => {
     const mapContainer = document.querySelector('.leaflet-container');
     if (mapContainer) {
       console.log("Map container dimensions:", mapContainer.clientWidth, mapContainer.clientHeight);
+      setMapDimensions({ width: mapContainer.clientWidth, height: mapContainer.clientHeight });
     }
   }, []);
+
+  useEffect(() => {
+    if (mapInstance) {
+      const handleMoveEnd = () => {
+        console.log("Map center:", mapInstance.getCenter());
+        console.log("Map zoom level:", mapInstance.getZoom());
+      };
+      mapInstance.on('moveend', handleMoveEnd);
+      return () => {
+        mapInstance.off('moveend', handleMoveEnd);
+      };
+    }
+  }, [mapInstance]);
+
+  useEffect(() => {
+    if (mapError) {
+      console.error("Map error:", mapError);
+    }
+  }, [mapError]);
 
   const MapUpdater = () => {
     const map = useMap();
@@ -64,7 +85,7 @@ const BikePumpMap = () => {
       <MapContainer
         center={[59.3293, 18.0686]}
         zoom={13}
-        style={{ height: "80vh", width: "100%" }}
+        style={{ height: mapDimensions.height, width: mapDimensions.width }}
         whenCreated={(mapInstance) => {
           console.log("Map is being created");
           setMapLoaded(true);
