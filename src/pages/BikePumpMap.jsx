@@ -1,4 +1,4 @@
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvent } from 'react-leaflet';
 import { useEffect, useState } from 'react';
 import { Box, Heading } from '@chakra-ui/react';
 import 'leaflet/dist/leaflet.css';
@@ -23,6 +23,11 @@ const BikePumpMap = () => {
     useEffect(() => {
       map.invalidateSize();
     }, [map]);
+
+    useMapEvent('resize', () => {
+      map.invalidateSize();
+    });
+
     return null;
   };
 
