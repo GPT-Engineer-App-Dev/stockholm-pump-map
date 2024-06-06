@@ -43,9 +43,14 @@ const BikePumpMap = () => {
         center={[59.3293, 18.0686]}
         zoom={13}
         style={{ height: "80vh", width: "100%" }}
-        whenCreated={() => {
+        whenCreated={(mapInstance) => {
           console.log("Map is being created");
           setMapLoaded(true);
+          console.log("Map instance:", mapInstance);
+        }}
+        whenReady={(mapInstance) => {
+          console.log("Map is ready");
+          console.log("Map instance:", mapInstance);
         }}
       >
         <MapUpdater />
