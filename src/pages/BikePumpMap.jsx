@@ -1,7 +1,7 @@
 import 'leaflet/dist/leaflet.css';
 import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvent } from 'react-leaflet';
 import { useEffect, useState } from 'react';
-import { Box, Heading } from '@chakra-ui/react';
+import { Box, Heading, Text } from '@chakra-ui/react';
 
 const bikePumpStations = [
   { name: "Station 1", lat: 59.3293, lng: 18.0686 },
@@ -11,6 +11,7 @@ const bikePumpStations = [
 
 const BikePumpMap = () => {
   const [mapLoaded, setMapLoaded] = useState(false);
+  const [mapError, setMapError] = useState(null);
 
   useEffect(() => {
     console.log("BikePumpMap component mounted");
@@ -39,6 +40,11 @@ const BikePumpMap = () => {
       <Heading as="h1" size="xl" mb={4} textAlign="center">
         Bike Pump Stations in Stockholm
       </Heading>
+      {mapError && (
+        <Box color="red.500" textAlign="center" mt={4}>
+          <Text>Failed to load the map. Please try again later.</Text>
+        </Box>
+      )}
       <MapContainer
         center={[59.3293, 18.0686]}
         zoom={13}
@@ -51,6 +57,10 @@ const BikePumpMap = () => {
         whenReady={(mapInstance) => {
           console.log("Map is ready");
           console.log("Map instance:", mapInstance);
+        }}
+        onError={(error) => {
+          console.error("Map loading error:", error);
+          setMapError(error);
         }}
       >
         <MapUpdater />
