@@ -1,7 +1,7 @@
+import 'leaflet/dist/leaflet.css';
 import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvent } from 'react-leaflet';
 import { useEffect, useState } from 'react';
 import { Box, Heading } from '@chakra-ui/react';
-import 'leaflet/dist/leaflet.css';
 
 const bikePumpStations = [
   { name: "Station 1", lat: 59.3293, lng: 18.0686 },
